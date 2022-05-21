@@ -6,19 +6,19 @@
 
 #define DATA_TIMER 1200
 #define ACK_TIMER 110
-#define MAX_SEQ 31
-#define NR_BUFS ((MAX_SEQ + 1) / 2)
+#define MAX_SEQ 31//帧的最大序号
+#define NR_BUFS ((MAX_SEQ + 1) / 2)//窗口大小
 #define inc(k) if(k < MAX_SEQ) k++; else k=0
 
 struct FRAME {
-    unsigned char kind; /* FRAME_DATA */
-    unsigned char ack;
-    unsigned char seq;
-    unsigned char data[PKT_LEN];
-    unsigned int padding;
+    unsigned char kind; //帧的种类
+    unsigned char ack;//ACK
+    unsigned char seq;//帧的序号
+    unsigned char data[PKT_LEN];//帧的数据
+    unsigned int padding;//填充字段
 };
 
-struct packet {
+struct packet {//缓冲区
     unsigned char data[PKT_LEN];
 };
 
@@ -71,12 +71,12 @@ int main(int argc, char** argv)
     int event, oldest_frame;
     struct FRAME f;
     int len = 0;
-    struct packet out_buffer[NR_BUFS];
-    struct packet in_buffer[NR_BUFS];
+    struct packet out_buffer[NR_BUFS];//发送窗口的缓冲区
+    struct packet in_buffer[NR_BUFS];//接受窗口的缓冲区
     unsigned char ack_expected = 0;
     unsigned char next_frame_to_send = 0;
     unsigned char frame_expected = 0;
-    unsigned char too_far = NR_BUFS;
+    unsigned char too_far = NR_BUFS;//接收窗口的上界
     int arrived[NR_BUFS] = { 0 };
 
     protocol_init(argc, argv);
